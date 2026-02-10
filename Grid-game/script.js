@@ -1,4 +1,4 @@
-const cards = document.querySelectorAll(".card");
+const gameBoard = document.getElementById("game-board");
 const displayClick = document.getElementById("clickcount");
 const displayTimer = document.getElementById("timer");
 const startBtn = document.getElementById("start-button");
@@ -8,6 +8,40 @@ let clicks = 0;
 let seconds = 0;
 let myTimer = null;
 let gameStart = false;
+
+//cards
+const cardList = [
+  { name: "snow", emoji: "❄️" },
+  { name: "snow", emoji: "❄️" },
+  { name: "fire", emoji: "🔥" },
+  { name: "fire", emoji: "🔥" },
+  { name: "tree", emoji: "🌲" },
+  { name: "tree", emoji: "🌲" },
+  { name: "water", emoji: "🌊" },
+  { name: "water", emoji: "🌊" },
+  { name: "rainbow", emoji: "🌈" },
+];
+
+// this shuffle all card
+cardList.sort(() => Math.random() - 0.5);
+
+//generate cards
+for (let i = 0; i < cardList.length; i++) {
+  let card = cardList[i];
+  gameBoard.innerHTML += `
+    <div class="card" name="${card.name}">
+      <div class="card-inner">
+        <div class="card-front">#</div>
+        <div class="card-back">${card.emoji}</div>
+      </div>
+    </div>`;
+}
+
+//select cards
+const cards = document.querySelectorAll(".card");
+for (let i = 0; i < cards.length; i++) {
+  cards[i].onclick = flipCard;
+}
 
 // this is for time
 function runClock() {
@@ -50,14 +84,6 @@ function flipCard() {
       }, 1000);
     }
   }
-}
-
-for (let i = 0; i < cards.length; i++) {
-  cards[i].onclick = flipCard;
-
-  // this shuffle all card
-  let randomNumber = Math.floor(Math.random() * 9);
-  cards[i].style.order = randomNumber;
 }
 
 //start button clicks
