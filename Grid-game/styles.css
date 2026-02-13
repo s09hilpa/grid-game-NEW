@@ -8,6 +8,10 @@
   font-weight: bold;
 }
 
+#start-button:hover {
+  background-color: #f0f0f0;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
@@ -76,8 +80,14 @@ body {
 }
 
 .card-back {
-  transform: rotateY(180deg); /*this is for flipping */
+  transform: rotateY(180deg);
   background-color: #f8f8f8;
+}
+
+.card.matched {
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out;
 }
 
 #scoreboard {
@@ -95,4 +105,90 @@ body {
 .score {
   font-size: 1.1rem;
   font-weight: bold;
+}
+
+.pop-up {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popup-text {
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popup-text h2 {
+  color: #114ca3;
+  margin: 0 0 20px 0;
+  font-size: 2rem;
+}
+
+.popup-text p {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.popup-text .stats {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.popup-text .stats p {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+#play-again-button {
+  background-color: #114ca3;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#play-again-button:hover {
+  background-color: #0d3a7a;
 }
