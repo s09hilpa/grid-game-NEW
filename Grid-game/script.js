@@ -6,6 +6,7 @@ const popUp = document.getElementById("pop-up");
 const playAgainBtn = document.getElementById("play-again-button");
 const finalTime = document.getElementById("final-time");
 const finalClicks = document.getElementById("final-clicks");
+const finalPairs = document.getElementById("final-pairs");
 
 let openedCards = [];
 let clicks = 0;
@@ -14,19 +15,6 @@ let timer = null;
 let lock = false;
 let matchedPairs = 0;
 let cardList = [];
-
-// //cards
-// const cardList = [
-//   { name: "snow", emoji: "❄️" },
-//   { name: "snow", emoji: "❄️" },
-//   { name: "fire", emoji: "🔥" },
-//   { name: "fire", emoji: "🔥" },
-//   { name: "tree", emoji: "🌲" },
-//   { name: "tree", emoji: "🌲" },
-//   { name: "water", emoji: "🌊" },
-//   { name: "water", emoji: "🌊" },
-//   { name: "rainbow", emoji: "🌈" },
-// ];
 
 //start game
 startBtn.addEventListener("click", startGame);
@@ -89,18 +77,22 @@ async function fetchCards() {
     console.log("Cards loaded from database:", cardList);
   } catch (error) {
     console.error("Error fetching cards:", error);
-    // if API fails
-    // cardList = [
-    //   { name: "snow", emoji: "❄️" },
-    //   { name: "snow", emoji: "❄️" },
-    //   { name: "fire", emoji: "🔥" },
-    //   { name: "fire", emoji: "🔥" },
-    //   { name: "tree", emoji: "🌲" },
-    //   { name: "tree", emoji: "🌲" },
-    //   { name: "water", emoji: "🌊" },
-    //   { name: "water", emoji: "🌊" },
-    //   { name: "rainbow", emoji: "🌈" },
-    // ];
+
+    //if API fails
+    cardList = [
+      { name: "snow", emoji: "❄️" },
+      { name: "snow", emoji: "❄️" },
+      { name: "fire", emoji: "🔥" },
+      { name: "fire", emoji: "🔥" },
+      { name: "tree", emoji: "🌲" },
+      { name: "tree", emoji: "🌲" },
+      { name: "water", emoji: "🌊" },
+      { name: "water", emoji: "🌊" },
+      { name: "rainbow", emoji: "🌈" },
+      { name: "rainbow", emoji: "🌈" },
+      { name: "moon", emoji: "🌙" },
+      { name: "moon", emoji: "🌙" },
+    ];
   }
 }
 
@@ -120,7 +112,7 @@ function createCards() {
 
     card.innerHTML = `
       <div class="card-inner">
-        <div class="card-front">#</div>
+        <div class="card-front"><img src="img/back.jpg" alt="Card Back"></div>
         <div class="card-back">${cardList[i].emoji}</div>
       </div>
     `;
@@ -190,11 +182,13 @@ function checkMatch() {
 
 //game over if player wins
 function checkWin() {
-  if (matchedPairs === 4) {
+  const totalPairs = cardList.length / 2;
+  if (matchedPairs === totalPairs) {
     clearInterval(timer);
     setTimeout(function () {
       finalTime.textContent = displayTimer.textContent;
       finalClicks.textContent = clicks;
+      finalPairs.textContent = totalPairs;
       popUp.style.display = "flex";
     }, 500);
   }
