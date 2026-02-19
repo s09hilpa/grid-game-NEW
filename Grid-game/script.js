@@ -2,31 +2,32 @@ const gameBoard = document.getElementById("game-board");
 const displayClick = document.getElementById("clickcount");
 const displayTimer = document.getElementById("timer");
 const startBtn = document.getElementById("start-button");
+const popUp = document.getElementById("pop-up");
+const playAgainBtn = document.getElementById("play-again-button");
+const finalTime = document.getElementById("final-time");
+const finalClicks = document.getElementById("final-clicks");
+const finalPairs = document.getElementById("final-pairs");
 
 let openedCards = [];
 let clicks = 0;
 let seconds = 0;
 let timer = null;
 let lock = false;
-
-//cards
-const cardList = [
-  { name: "snow", emoji: "❄️" },
-  { name: "snow", emoji: "❄️" },
-  { name: "fire", emoji: "🔥" },
-  { name: "fire", emoji: "🔥" },
-  { name: "tree", emoji: "🌲" },
-  { name: "tree", emoji: "🌲" },
-  { name: "water", emoji: "🌊" },
-  { name: "water", emoji: "🌊" },
-  { name: "rainbow", emoji: "🌈" },
-];
+let matchedPairs = 0;
+let cardList = [];
 
 //start game
 startBtn.addEventListener("click", startGame);
 
-function startGame() {
+//play again
+playAgainBtn.addEventListener("click", function () {
+  popUp.style.display = "none";
+  startGame();
+});
+
+async function startGame() {
   resetGame();
+  await fetchCards();
   shuffleCards();
   createCards();
 }
@@ -40,11 +41,12 @@ function resetGame() {
   clicks = 0;
   openedCards = [];
   lock = false;
+  matchedPairs = 0;
 
   displayClick.textContent = 0;
   displayTimer.textContent = "0:00";
 
-  gameBoard.innerHTML = ""; //old cards will stop
+  gameBoard.innerHTML = ""; //clear cards
 }
 
 //timer
@@ -64,6 +66,36 @@ function startTimer() {
   }, 1000);
 }
 
+//fetch cards from the API
+async function fetchCards() {
+  try {
+    const response = await fetch("/cards");
+    if (!response.ok) {
+      throw new Error("Failed to fetch cards");
+    }
+    cardList = await response.json();
+    console.log("Cards loaded from database:", cardList);
+  } catch (error) {
+    console.error("Error fetching cards:", error);
+
+    //if API fails
+    cardList = [
+      { name: "snow", emoji: "❄️" },
+      { name: "snow", emoji: "❄️" },
+      { name: "fire", emoji: "🔥" },
+      { name: "fire", emoji: "🔥" },
+      { name: "tree", emoji: "🌲" },
+      { name: "tree", emoji: "🌲" },
+      { name: "water", emoji: "🌊" },
+      { name: "water", emoji: "🌊" },
+      { name: "rainbow", emoji: "🌈" },
+      { name: "rainbow", emoji: "🌈" },
+      { name: "moon", emoji: "🌙" },
+      { name: "moon", emoji: "🌙" },
+    ];
+  }
+}
+
 // shuffle cards
 function shuffleCards() {
   cardList.sort(function () {
@@ -80,7 +112,7 @@ function createCards() {
 
     card.innerHTML = `
       <div class="card-inner">
-        <div class="card-front">#</div>
+        <div class="card-front"><img src="img/back.jpg" alt="Card Back"></div>
         <div class="card-back">${cardList[i].emoji}</div>
       </div>
     `;
@@ -103,14 +135,16 @@ function flipCard(event) {
     return;
   }
 
+  if (card.classList.contains("matched")) {
+    return;
+  }
+  //timer starts on first clicks
   if (clicks === 0) {
     startTimer();
   }
 
   card.classList.add("flipped");
-
   openedCards.push(card);
-
   clicks++;
   displayClick.textContent = clicks;
 
@@ -125,7 +159,14 @@ function checkMatch() {
   let card2 = openedCards[1];
 
   if (card1.getAttribute("data-name") === card2.getAttribute("data-name")) {
+    card1.classList.add("matched");
+    card2.classList.add("matched");
+
+    matchedPairs++;
     openedCards = [];
+
+    //if game won
+    checkWin();
   } else {
     lock = true;
 
@@ -139,5 +180,23 @@ function checkMatch() {
   }
 }
 
-shuffleCards();
-createCards();
+//game over if player wins
+function checkWin() {
+  const totalPairs = cardList.length / 2;
+  if (matchedPairs === totalPairs) {
+    clearInterval(timer);
+    setTimeout(function () {
+      finalTime.textContent = displayTimer.textContent;
+      finalClicks.textContent = clicks;
+      finalPairs.textContent = totalPairs;
+      popUp.style.display = "flex";
+    }, 500);
+  }
+}
+
+//reset game
+window.addEventListener("DOMContentLoaded", async function () {
+  await fetchCards();
+  shuffleCards();
+  createCards();
+});

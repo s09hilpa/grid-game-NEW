@@ -11,9 +11,22 @@
     <div id="scoreboard">
       <div class="clock">Time: <span id="timer">00:00</span></div>
       <div class="score">Score: <span id="clickcount">0</span></div>
-      <button id="start-button">Start</button>
+      <button id="start-button">Reset</button>
     </div>
     <div class="game-board" id="game-board"></div>
+
+    <div id="pop-up" class="pop-up">
+      <div class="popup-text">
+        <h2>🎉 Congratulations!</h2>
+        <p>You won!</p>
+        <div class="stats">
+          <p>⏱️ Time: <span id="final-time">00:00</span></p>
+          <p>👆 Clicks: <span id="final-clicks">0</span></p>
+          <p>✨ You matched all <span id="final-pairs">0</span> pairs!</p>
+        </div>
+        <button id="play-again-button">Play Again!</button>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
