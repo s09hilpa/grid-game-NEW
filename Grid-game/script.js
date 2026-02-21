@@ -7,9 +7,12 @@ const playAgainBtn = document.getElementById("play-again-button");
 const finalTime = document.getElementById("final-time");
 const finalClicks = document.getElementById("final-clicks");
 const finalPairs = document.getElementById("final-pairs");
+const displayMoves = document.getElementById("moves-left");
 
 let openedCards = [];
 let clicks = 0;
+let maxMoves = 20;
+let remainingMoves = maxMoves;
 let seconds = 0;
 let timer = null;
 let lock = false;
@@ -42,6 +45,10 @@ function resetGame() {
   openedCards = [];
   lock = false;
   matchedPairs = 0;
+
+  remainingMoves = maxMoves;
+  displayMoves.textContent = remainingMoves;
+  displayMoves.style.color = "black";
 
   displayClick.textContent = 0;
   displayTimer.textContent = "0:00";
@@ -158,6 +165,15 @@ function checkMatch() {
   let card1 = openedCards[0];
   let card2 = openedCards[1];
 
+  //subtract moves
+  remainingMoves--;
+  displayMoves.textContent = remainingMoves;
+
+  //warning
+  if (remainingMoves <= 5) {
+    displayMoves.style.color = "red";
+  }
+
   if (card1.getAttribute("data-name") === card2.getAttribute("data-name")) {
     card1.classList.add("matched");
     card2.classList.add("matched");
@@ -176,6 +192,11 @@ function checkMatch() {
 
       openedCards = [];
       lock = false;
+      if (remainingMoves <= 0) {
+        alert("Game Over! You ran out of moves. 😵");
+        resetGame();
+        startGame(); //Restart automatically
+      }
     }, 1000);
   }
 }
